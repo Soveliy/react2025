@@ -1,39 +1,61 @@
+import { useState } from 'react';
 import './App.css';
-import Products from './components/Products/Products';
+import Button from './components/Button/Button';
+import CardButton from './components/CardButton/CardButton';
+import Header from './components/Header/Header';
+import JournalAddButton from './components/JournalAddButton/JournalAddButton';
+import JournalForm from './components/JournalForm/JournalForm';
+import JournalItem from './components/JournalItem/JournalItem';
+import JournalList from './components/JournalList/JournalList';
+import Body from './layouts/Body/Body';
+import LeftPanel from './layouts/LeftPanel/LeftPanel';
+
+const INITIAL_DATA = [
+	{
+		title: 'Подготовка к обновлению курсов',
+		text: 'Горные походы открывают удивительные природные ландшафт',
+		date: new Date()
+	},
+	{
+		title: 'Поход в годы',
+		text: 'Думал, что очень много времени',
+		date: new Date()
+	}
+];
+
 function App() {
-  const data = [
-    {
-      name: "Никита",
-      desc: "Описание 1",
-      date: new Date(2014, 1, 1)
-    },
-    {
-      name: "Никита 2",
-      desc: "Описание 2",
-      date: new Date(2014, 1, 1)
-    },
-    {
-      name: "Никита 3",
-      desc: "Описание 3",
-      date: new Date(2014, 1, 1)
-    },
+	const [items, setItems] = useState(INITIAL_DATA);
 
-  ]
-  return (
-    <>
-      <h1>Привет</h1>
-      <Products name='Никита' desc='Тест' date='2014-10-10' />
-      <div>
-        {
-          data.map((item, index) => (
-            <Products key={index} name={item.name} desc={item.desc} date={item.date} />
-          ))
-        }
-
-      </div>
-    </>
-
-  )
+	const addItem = item => {
+		setItems(oldItems => [...oldItems, {
+			text: item.text,
+			title: item.title,
+			date: new Date(item.date)
+		}]);
+	};
+	
+	return (
+		<div className='app'>
+			<LeftPanel>
+				<Header/>
+				<JournalAddButton/>
+				<JournalList>
+					{items.map(el => (
+						<CardButton>
+							<JournalItem 
+								title={el.title}
+								text={el.text}
+								date={el.date}
+							/>
+						</CardButton>
+					))}
+				</JournalList>
+			</LeftPanel>
+			<Body>
+				<JournalForm onSubmit={addItem}/>
+			</Body>
+		</div>
+	);
 }
 
-export default App
+export default App;
