@@ -13,19 +13,65 @@ import LeftPanel from './layouts/LeftPanel/LeftPanel';
 
 function App() {
 
-	
+	const INITIAL_DATA = [
+		// {
+		// 	title: "Подготовка к обновлению курсов",
+		// 	text:'Тестовое описание',
+		// 	date: new Date(),
+		// 	id:1,
+		// },
+		// {
+		// 	title: "Тест 2",
+		// 	text:'ещё одно описание',
+		// 	date: new Date(),
+		// 	id:2,
+		// },
+
+	];
+	const [items, setItems] = useState(INITIAL_DATA);
+	const addItem = (item) => {
+		setItems(oldItems =>
+			[...oldItems, {
+				title:item.title,
+				text:item.text,
+				date: new Date(item.date),
+				id: Math.max(...oldItems.map(i => i.id)) + 1
+			}]
+		)
+
+	}
+	const sortByDate = (a,b) => {
+		if (a.date < b.date){
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+	let list = <p>Добавьте элемент</p>
+
+	if (items.length > 0){
+		list = items.sort(sortByDate).map(el => (
+			<CardButton key={el.id}>
+				<JournalItem name={el.title} date={el.date} text={el.text}/>
+			</CardButton>
+		))
+	}
+
 	return (
 		<div className='app'>
 			<LeftPanel>
 				<Header/>
 				<JournalAddButton/>
 				<JournalList>
-					
-						<CardButton>
-							<JournalItem 
-							/>
-						</CardButton>
-	
+					{/* {
+						items.length === 0 ? <p>Добавьте элемент</p> : items.sort(sortByDate).map(el => (
+							<CardButton key={el.id}>
+								<JournalItem name={el.title} date={el.date} text={el.text}/>
+							</CardButton>
+						))
+					} */}
+					{list}
+
 				</JournalList>
 			</LeftPanel>
 			<Body>
