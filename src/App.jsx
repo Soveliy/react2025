@@ -10,29 +10,9 @@ import JournalList from './components/JournalList/JournalList';
 import Body from './layouts/Body/Body';
 import LeftPanel from './layouts/LeftPanel/LeftPanel';
 
-const INITIAL_DATA = [
-	{
-		title: 'Подготовка к обновлению курсов',
-		text: 'Горные походы открывают удивительные природные ландшафт',
-		date: new Date()
-	},
-	{
-		title: 'Поход в годы',
-		text: 'Думал, что очень много времени',
-		date: new Date()
-	}
-];
 
 function App() {
-	const [items, setItems] = useState(INITIAL_DATA);
 
-	const addItem = item => {
-		setItems(oldItems => [...oldItems, {
-			text: item.text,
-			title: item.title,
-			date: new Date(item.date)
-		}]);
-	};
 	
 	return (
 		<div className='app'>
@@ -40,15 +20,12 @@ function App() {
 				<Header/>
 				<JournalAddButton/>
 				<JournalList>
-					{items.map(el => (
+					
 						<CardButton>
 							<JournalItem 
-								title={el.title}
-								text={el.text}
-								date={el.date}
 							/>
 						</CardButton>
-					))}
+	
 				</JournalList>
 			</LeftPanel>
 			<Body>

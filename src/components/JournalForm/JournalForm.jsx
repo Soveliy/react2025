@@ -1,19 +1,13 @@
 import './JournalForm.css';
 import Button from '../Button/Button';
 
-function JournalForm({ onSubmit }) {
-	const addJournalItem = (e) => {
-		e.preventDefault();
-		const formData = new FormData(e.target);
-		const formProps = Object.fromEntries(formData);
-		onSubmit(formProps);
-	};
+function JournalForm() {
 
 	return (
-		<form className='journal-form' onSubmit={addJournalItem}>
-			<input type='text' name='title'/>
-			<input type='date' name='date' />
-			<input type='text' name='tag' />
+		<form className='journal-form'>
+			<input type='text'/>
+			<input type='date' />
+			<input type='text' />
 			<textarea name="post" id="" cols="30" rows="10"></textarea>
 			<button>Сохр</button>
 		</form>
