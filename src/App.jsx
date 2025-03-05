@@ -1,84 +1,90 @@
-import { useState } from 'react';
-import './App.css';
-import Button from './components/Button/Button';
-import CardButton from './components/CardButton/CardButton';
-import Header from './components/Header/Header';
-import JournalAddButton from './components/JournalAddButton/JournalAddButton';
-import JournalForm from './components/JournalForm/JournalForm';
-import JournalItem from './components/JournalItem/JournalItem';
-import JournalList from './components/JournalList/JournalList';
-import Body from './layouts/Body/Body';
-import LeftPanel from './layouts/LeftPanel/LeftPanel';
+import { useEffect, useState } from "react";
+import {BrowserRouter as Router, Routes, Route, useParams, Link} from 'react-router-dom';
+const ProductsList = () => {
 
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+      fetch('https://api.escuelajs.co/api/v1/products/', {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+  }, []);
 
-function App() {
-
-	const INITIAL_DATA = [
-		// {
-		// 	title: "Подготовка к обновлению курсов",
-		// 	text:'Тестовое описание',
-		// 	date: new Date(),
-		// 	id:1,
-		// },
-		// {
-		// 	title: "Тест 2",
-		// 	text:'ещё одно описание',
-		// 	date: new Date(),
-		// 	id:2,
-		// },
-
-	];
-	const [items, setItems] = useState(INITIAL_DATA);
-	const addItem = (item) => {
-		setItems(oldItems =>
-			[...oldItems, {
-				title:item.title,
-				text:item.text,
-				date: new Date(item.date),
-				id: Math.max(...oldItems.map(i => i.id)) + 1
-			}]
-		)
-
-	}
-	const sortByDate = (a,b) => {
-		if (a.date < b.date){
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-	let list = <p>Добавьте элемент</p>
-
-	if (items.length > 0){
-		list = items.sort(sortByDate).map(el => (
-			<CardButton key={el.id}>
-				<JournalItem name={el.title} date={el.date} text={el.text}/>
-			</CardButton>
-		))
-	}
-
-	return (
-		<div className='app'>
-			<LeftPanel>
-				<Header/>
-				<JournalAddButton/>
-				<JournalList>
-					{/* {
-						items.length === 0 ? <p>Добавьте элемент</p> : items.sort(sortByDate).map(el => (
-							<CardButton key={el.id}>
-								<JournalItem name={el.title} date={el.date} text={el.text}/>
-							</CardButton>
-						))
-					} */}
-					{list}
-
-				</JournalList>
-			</LeftPanel>
-			<Body>
-				<JournalForm onSubmit={addItem}/>
-			</Body>
-		</div>
-	);
+  return (
+    <>
+    {loading && <p>Товары загружаются. Подождите немного</p>}
+    {!loading &&
+      products.map((product) => (
+        <div key={product.id}>
+        <h2>{product.title}</h2>
+        <img src={product.images[0]} alt="" />
+        <p>{product.description}</p>
+        <Link to={`/catalog/${product.id}`}>Перейти в карточку</Link>
+      </div>
+      ))
+    }
+   
+    </>
+  )
+}
+const Home = () => {
+  return (
+    <h1 className="m-5 md:mt-0 bg-lime-200 mt-[100px] hover:bg-amber-950">Это главная страница</h1>
+  )
 }
 
+const ProductsDetail = () => {
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(null);
+  useEffect(() => {
+      fetch(`https://api.escuelajs.co/api/v1/products/${id}/`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      })
+      .then((res) => (
+        res.json())
+      )
+      .then((data) => {
+        setProduct(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, []);
+
+  return (
+    <>
+
+      <h1>{product?.title}</h1>
+    
+    </>
+   
+  )
+}
+
+const App = () => {
+  return (
+    <Router>
+      <nav class=''>
+          <Link to='/'>Главная</Link>
+          <Link to='/catalog/'>Каталог</Link>
+      </nav>  
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/catalog' element={<ProductsList/>}/>
+        <Route path='/catalog/:id' element={<ProductsDetail/>}/>
+      </Routes>
+    </Router>
+  )
+}
 export default App;
