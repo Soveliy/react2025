@@ -47,7 +47,7 @@ const ProductsList = () => {
   const {addToCart, cart} = useCart();
 
   useEffect(() => {
-      fetch('https://api.escuelajs.co/api/v1/products/', {
+      fetch('https://67d1af6490e0670699bb23c3.mockapi.io/api/v1/products', {
         headers:{
           'Content-Type': 'application/json',
         }
@@ -56,6 +56,7 @@ const ProductsList = () => {
       .then((data) => {
         setProducts(data);
         setLoading(false);
+        console.log(data)
       })
   }, []);
 
@@ -66,8 +67,8 @@ const ProductsList = () => {
       products.map((product) => (
         <div key={product.id}>
         <h2>{product.title}</h2>
-        <img src={product.images[0]} alt="" />
-        <p>{product.description}</p>
+        <img src={product?.image} alt="" />
+        <p>{product.desc}</p>
         <button onClick={() => addToCart(product)}>Добавить в корзину</button>
         <Link to={`/catalog/${product.id}`}>Перейти в карточку</Link>
       </div>
